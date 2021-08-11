@@ -2,6 +2,8 @@ const stateDefault = {
   mangSinhVien: [
     { maSV: "1", hoTen: "A", soDienThoai: "0938111111", email: "nguyenvana@gmail.com" },
     { maSV: "2", hoTen: "B", soDienThoai: "0969696969", email: "nguyenvanb@gmail.com" },
+    { maSV: "3", hoTen: "C", soDienThoai: "0808088888", email: "nguyenvanc@gmail.com" },
+    { maSV: "4", hoTen: "D", soDienThoai: "5555555555", email: "nguyenvand@gmail.com" },
   ],
   sinhVienChinhSua: {},
 };
@@ -18,10 +20,10 @@ export const BaiTapFormValidationReducer = (state = stateDefault, action) => {
     case "XOA_SINH_VIEN": {
       let { mangSinhVien } = state;
       let index = mangSinhVien.findIndex((sinhVien) => sinhVien.maSV === action.maSV);
-
-      mangSinhVien.splice(index, 1);
-      state.mangSinhVien = [...mangSinhVien];
-
+      if (index !== -1) {
+        mangSinhVien.splice(index, 1);
+        state.mangSinhVien = [...mangSinhVien];
+      }
       return { ...state };
     }
 
@@ -40,13 +42,13 @@ export const BaiTapFormValidationReducer = (state = stateDefault, action) => {
           sinhVienCapNhat[key] = action.sinhVienCapNhat[key];
         }
       }
-    
+
       state.mangSinhVien = [...state.mangSinhVien];
       return { ...state };
     }
-    case 'TIM_KIEM' : {
-      state.mangSinhVien=[...action.mangSinhVienFilter];
-  
+    case "TIM_KIEM": {
+      state.mangSinhVien = [...action.mangSinhVienFilter];
+
       return { ...state };
     }
     default: {

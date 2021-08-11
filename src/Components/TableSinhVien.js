@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 class TableSinhVien extends Component {
   state = {
-    isSearching:false,
-    mangSinhVienFilter:[]
-  }
+    isSearching: false,
+    valueSearching: "",
+    mangSinhVienFilter: [],
+  };
   renderMangSinhVien = () => {
     return this.props.mangSinhVien.map((sinhVien, index) => {
       return (
@@ -43,8 +44,12 @@ class TableSinhVien extends Component {
       );
     });
   };
-  renderMangSinhVienFilter=() => {
-    return this.state.mangSinhVienFilter.map((sinhVien, index) => {
+  renderMangSinhVienFilter = () => {
+    let mangSinhVienFilter = this.state.mangSinhVienFilter.filter((sinhVien) =>
+      sinhVien.hoTen.toUpperCase().includes(this.state.valueSearching.toUpperCase())
+    );
+
+    return mangSinhVienFilter.map((sinhVien, index) => {
       return (
         <tr>
           <td>{sinhVien.maSV}</td>
@@ -81,21 +86,28 @@ class TableSinhVien extends Component {
       );
     });
   };
-  handleChangeSearch = (event) => {   
-    let valueSearch=event.target.value;   
-    let mangSinhVienFilter = this.props.mangSinhVien.filter((sinhVien) => sinhVien.hoTen.toUpperCase().includes(valueSearch.toUpperCase()));
-    
-    this.setState({
-      isSearching:true,
-      mangSinhVienFilter:mangSinhVienFilter
-    })
-    console.log(this.state)
-  
-    // this.props.dispatch({
-    //   type:"TIM_KIEM",
-    //   mangSinhVienFilter:mangSinhVienFilter
-    // })
+  handleChangeSearch = (event) => {
+    let valueSearch = event.target.value;
+    // let mangSinhVienFilter = this.props.mangSinhVien.filter((sinhVien) => sinhVien.hoTen.toUpperCase().includes(valueSearch.toUpperCase()));
+    let mangSinhVienFilter = this.props.mangSinhVien.filter((sinhVien) =>
+      sinhVien.hoTen.toUpperCase().includes(valueSearch.toUpperCase())
+    );
+
+    this.setState(
+      {
+        isSearching: true,
+        valueSearching: valueSearch,
+        mangSinhVienFilter: [...mangSinhVienFilter],
+      }
+    );
   };
+
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      mangSinhVienFilter: newProps.mangSinhVien,
+    });
+  }
+
   render() {
     return (
       <table className="table mt-3">
@@ -123,7 +135,9 @@ class TableSinhVien extends Component {
           </tr>
         </thead>
         {/* <tbody>{this.state.isSearching ? '' :this.renderMangSinhVien()}</tbody> */}
-        <tbody>{this.state.isSearching ? this.renderMangSinhVienFilter() :this.renderMangSinhVien()}</tbody>
+        <tbody>
+          {this.state.isSearching ? this.renderMangSinhVienFilter() : this.renderMangSinhVien()}
+        </tbody>
       </table>
     );
   }
